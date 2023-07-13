@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Project SQL</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class="logo">Miguel Brown</a>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="index.html">Projects Dashboard</a></li>
+							<li><a href="aboutMe.html">About Me</a></li>
+						</ul>
+						<ul class="icons">
+							<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+							<li><a href="https://www.linkedin.com/in/miguel-brown-912574210/" class="icon brands fa-linkedin"><span class="label">linkedin</span></a></li>
+							<li><a href="https://github.com/migsbro294" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>AMAZON WEB SCRAPER WITH PYTHON<br />
+									</h1>
+									<p> </p>
+								</header>
+								<div class="image main"><img src="images/amazon.jpg" alt="" /></div>
+									<p>
+									</p>
+									<h5>import libraries </h5>
+									<pre><code>from bs4 import BeautifulSoup
+import requests
+import time
+import datetime
+
+import smtplib
+										</code></pre>
+
+									<h5>Connect to Website and pull in data</h5>
+									<pre><code>URL = 'https://www.amazon.com/Funny-Data-Systems-Business-Analyst/dp/B07FNW9FGJ/ref=sr_1_3?dchild=1&keywords=data%2Banalyst%2Btshirt&qid=1626655184&sr=8-3&customId=B0752XJYNL&th=1'
+
+headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36", "Accept-Encoding":"gzip, deflate", "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "DNT":"1","Connection":"close", "Upgrade-Insecure-Requests":"1"}
+
+page = requests.get(URL, headers=headers)
+
+soup1 = BeautifulSoup(page.content, "html.parser")
+
+soup2 = BeautifulSoup(soup1.prettify(), "html.parser")
+
+title = soup2.find(id='productTitle').get_text()
+
+price = soup2.find(id='priceblock_ourprice').get_text()
+
+
+print(title)
+print(price)
+											</code></pre>
+
+									<h5>Clean up the data a little bit </h5>
+									<pre><code>price = price.strip()[1:]
+title = title.strip()
+
+print(title)
+print(price)
+										 </code></pre>
+
+								<h5>Create a Timestamp for your output to track when data was collected</h5>
+									<pre><code>import datetime
+today = datetime.date.today()
+
+print(today)
+</code></pre>
+
+							<h5>Create CSV and write headers and data into the file</h5>
+									<pre><code>import csv 
+header = ['Title', 'Price', 'Date']
+data = [title, price, today]
+
+
+with open('AmazonWebScraperDataset.csv', 'w', newline='', encoding='UTF8') as f:
+	writer = csv.writer(f)
+	writer.writerow(header)
+	writer.writerow(data)
+											
+</code></pre>
+
+						<h5></h5>
+									<pre><code>
+import pandas as pd
+df = pd.read_csv(r'C:\Users\miguelbrown\AmazonWebScraperDataset.csv')
+
+print(df)
+</code></pre>
+
+								<h5>Now we are appending data to the csv</h5>
+									<pre><code>with open('AmazonWebScraperDataset.csv', 'a+', newline='', encoding='UTF8') as f:
+writer = csv.writer(f)
+writer.writerow(data)
+										</code></pre>
+										<h5> Combine all of the above code into one function</h5>
+									<pre><code>def check_price():
+URL = 'https://www.amazon.com/Funny-Data-Systems-Business-Analyst/dp/B07FNW9FGJ/ref=sr_1_3?dchild=1&keywords=data%2Banalyst%2Btshirt&qid=1626655184&sr=8-3&customId=B0752XJYNL&th=1'
+
+headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36", "Accept-Encoding":"gzip, deflate", "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "DNT":"1","Connection":"close", "Upgrade-Insecure-Requests":"1"}
+
+page = requests.get(URL, headers=headers)
+
+soup1 = BeautifulSoup(page.content, "html.parser")
+
+soup2 = BeautifulSoup(soup1.prettify(), "html.parser")
+
+title = soup2.find(id='productTitle').get_text()
+
+price = soup2.find(id='priceblock_ourprice').get_text()
+
+price = price.strip()[1:]
+title = title.strip()
+
+import datetime
+
+today = datetime.date.today()
+
+import csv 
+
+header = ['Title', 'Price', 'Date']
+data = [title, price, today]
+
+with open('AmazonWebScraperDataset.csv', 'a+', newline='', encoding='UTF8') as f:
+	writer = csv.writer(f)
+	writer.writerow(data)
+
+										</code></pre>
+										<h5>Runs check_price after a set time and inputs data into your CSV</h5>
+									<pre><code>while(True):
+check_price()
+time.sleep(86400)
+										</code></pre>
+										<h5>sending yourself an email when the price hits below a certain level 
+											</h5>
+									<pre><code>def send_mail():
+server = smtplib.SMTP_SSL('smtp.gmail.com',465)
+server.ehlo()
+#server.starttls()
+server.ehlo()
+server.login('miguelbrown294@icloud.com','xxxxxxxxxxxxxx')
+
+subject = "The Shirt you want is below $15! Now is your chance to buy!"
+body = "Miguel, This is the moment we have been waiting for. Now is your chance to pick up the shirt of your dreams. Don't mess it up! Link here: https://www.amazon.com/Funny-Data-Systems-Business-Analyst/dp/B07FNW9FGJ/ref=sr_1_3?dchild=1&keywords=data+analyst+tshirt&qid=1626655184&sr=8-3"
+
+msg = f"Subject: {subject}\n\n{body}"
+
+server.sendmail(
+	'miguelbrown294@icloud.com',
+	msg
+	
+)
+										
+										</code></pre>
+										
+
+							</section>
+							<ul class="actions special">
+								<li><a href="https://github.com/migsbro294/PortfolioProject/blob/main/Amazon%20Web%20Scraper%20Project.ipynb" class="button large">View Full Code</a></li>
+							</ul>
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section class="split contact">
+							<section class="alt">
+								<h3>Address</h3>
+								<p> Queens Crescent<br />
+								Richmond Park, Jamaica</p>
+							</section>
+							<section>
+								<h3>Phone</h3>
+								<p><a href="#">(876) 284-6431</a></p>
+							</section>
+							<section>
+								<h3>Email</h3>
+								<p><a href="#">miguel.brown294@icloud.com</a></p>
+							</section>
+							<section>
+								<h3>Social</h3>
+								<ul class="icons alt">
+									<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="https://www.linkedin.com/in/miguel-brown-912574210/" class="icon brands fa-linkedin"><span class="label">linkedin</span></a></li>
+									<li><a href="https://github.com/migsbro294" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+								</ul>
+							</section>
+						</section>
+					</footer>
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
